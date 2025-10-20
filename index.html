@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thiệp Chúc Mừng</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load Google Font: Dancing Script -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Cấu hình cơ bản */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fce7f3; /* Màu hồng nhạt cho nền */
+            overflow: hidden; /* Giấu thanh cuộn */
+            min-height: 100vh;
+        }
+
+        /* Áp dụng font Dancing Script cho phần lời chúc */
+        .handwritten-font {
+            font-family: 'Dancing Script', cursive;
+            line-height: 1.6;
+        }
+
+        /* --- Custom CSS cho hiệu ứng chuyển động (Particle Animation) --- */
+        @keyframes floatParticle {
+            0% { 
+                transform: translateY(100vh) translateX(var(--float-x)) rotate(0); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-50vh) translateX(var(--float-x)) rotate(var(--float-rotate)); 
+                opacity: 0; 
+            }
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            user-select: none;
+            animation: floatParticle linear infinite;
+            z-index: 1; /* Nằm dưới nội dung chính */
+            text-shadow: 0 0 5px rgba(255, 192, 203, 0.5); /* Thêm bóng nhẹ cho nổi bật */
+        }
+
+        /* Hiệu ứng trượt và lật khi mở thiệp */
+        .card-transition {
+            transition: transform 0.8s ease-in-out, opacity 0.5s ease-in-out;
+        }
+        
+        .card-cover {
+            background-image: linear-gradient(135deg, #fecaca 0%, #fda4af 100%); /* Hồng nhạt đến hồng đậm */
+            box-shadow: 0 10px 30px rgba(255, 160, 190, 0.5);
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        .envelope-icon {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .envelope-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    
+    <div id="app" class="relative w-full max-w-6xl h-[90vh] flex items-center justify-center">
+
+        <!-- Màn hình bì thư (Cover Screen) -->
+        <div id="cover-screen" class="card-transition absolute w-full max-w-lg p-8 text-center bg-white rounded-3xl shadow-2xl z-20">
+            <div class="flex items-center justify-center space-x-4 mb-4">
+                <i data-lucide="mail-heart" class="w-10 h-10 text-rose-500"></i>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-rose-600 tracking-tight" style="font-family: serif, cursive;">Thiệp Tình Yêu 20/10</h1>
+                <i data-lucide="mail-heart" class="w-10 h-10 text-rose-500"></i>
+            </div>
+            
+            <p class="text-xl text-gray-700 mb-8 font-semibold">Dành tặng cho những người phụ nữ tuyệt vời nhất!</p>
+            
+            <!-- Bì thư giả lập -->
+            <div id="envelope" class="card-cover mx-auto w-64 h-40 rounded-xl flex items-center justify-center cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-300" onclick="openCard()">
+                <div class="bg-white p-4 rounded-lg shadow-inner">
+                    <p class="text-rose-500 font-bold text-lg italic" style="font-family: cursive;">Gửi đến toàn thể Mẹ, Các Chị, Vợ và Các Cháu Gái</p>
+                    <div class="flex justify-center space-x-2 mt-1">
+                        <i data-lucide="heart" class="w-4 h-4 text-red-500 fill-red-500"></i>
+                        <i data-lucide="heart" class="w-4 h-4 text-red-500 fill-red-500"></i>
+                        <i data-lucide="heart" class="w-4 h-4 text-red-500 fill-red-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <p class="mt-8 text-lg font-bold text-rose-600 animate-pulse">
+                <i data-lucide="arrow-down-circle" class="w-5 h-5 inline-block mr-2"></i>
+                Nhấn vào bì thư để mở thiệp
+                <i data-lucide="arrow-down-circle" class="w-5 h-5 inline-block ml-2"></i>
+            </p>
+            <p class="text-sm text-gray-500 mt-2">Một món quà đặc biệt đang chờ bạn bên trong...</p>
+        </div>
+
+        <!-- Màn hình thiệp đã mở (Card Screen) -->
+        <div id="card-screen" class="card-transition absolute w-full h-full p-6 md:p-10 bg-white rounded-3xl shadow-2xl opacity-0 scale-95 pointer-events-none z-10 hidden overflow-y-auto">
+            
+            <div class="flex flex-col h-full items-center">
+                <!-- Phần Hình ảnh (Lớn nhất có thể) -->
+                <div class="w-full max-w-2xl p-4 mb-6 flex-shrink-0">
+                    <div class="w-full h-auto rounded-2xl overflow-hidden shadow-lg border-4 border-white bg-gray-100 flex items-center justify-center">
+                        <img src="https://i.postimg.cc/QCTZ3RM3/thay-ph-ng-th-nh-s-n-kh-u-c.png" alt="Ảnh tập thể" class="w-full h-auto object-contain">
+                    </div>
+                </div>
+
+                <!-- Phần Lời Chúc & Tiêu đề -->
+                <div class="w-full md:w-3/4 p-4 flex flex-col items-center text-center flex-grow">
+                    <div class="border-b-2 border-rose-300 pb-2 mb-4 w-full">
+                        <h2 class="text-4xl md:text-5xl font-extrabold text-rose-600 italic handwritten-font" style="font-family: 'Dancing Script', cursive;">Gửi người yêu thương...</h2>
+                    </div>
+                    <p class="text-base text-gray-500 mb-6">Ngày Phụ Nữ Việt Nam 20/10</p>
+
+                    <div class="bg-rose-50 p-6 rounded-xl shadow-inner w-full text-lg md:text-xl leading-relaxed">
+                        <p class="handwritten-font text-2xl md:text-3xl text-gray-800">
+                            Nhân ngày Phụ nữ Việt Nam 20/10, Hội Đàn ông nhà ông Thành xin gửi lời chúc tốt đẹp nhất đến Mẹ, các chị, và các cháu gái. Chúc tất cả những người phụ nữ tuyệt vời của chúng ta luôn mạnh khỏe, xinh đẹp, rạng rỡ và mãi là nguồn cảm hứng, là hậu phương vững chắc cho cả gia đình. Chúng tôi yêu thương và trân trọng mọi người!
+                        </p>
+                    </div>
+                    
+                    <div class="mt-8 text-center w-full">
+                        <p class="text-xl text-rose-500 font-semibold italic handwritten-font text-3xl">Mãi yêu!</p>
+                        <p class="text-2xl font-bold text-rose-700 mt-1 handwritten-font text-4xl">Hội đàn ông nhà ông Thành</p>
+                    </div>
+
+                    <!-- Nút hành động cuối cùng -->
+                    <button class="w-full max-w-sm py-4 px-6 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-lg rounded-full shadow-lg hover:shadow-xl transform hover:scale-[1.03] transition-all duration-300 mt-8">
+                        <div class="flex items-center justify-center space-x-2">
+                            <i data-lucide="sparkles" class="w-5 h-5 fill-white text-white"></i>
+                            <span>Gửi Trao Lời Yêu Thương</span>
+                            <i data-lucide="sparkles" class="w-5 h-5 fill-white text-white"></i>
+                        </div>
+                    </button>
+
+                    <p class="text-sm text-gray-600 mt-4">Chúc toàn thể những người phụ nữ của gia đình ngày 20/10 thật hạnh phúc và ý nghĩa!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Elements ---
+        const container = document.getElementById('app');
+
+        // --- Config ---
+        const symbols = ['💖', '❤️', '🌹', '🌸', '✨']; 
+        const NUM_PARTICLES = 100;
+
+        /**
+         * Hàm tạo một hạt (particle) chuyển động
+         * @param {string} symbol - Biểu tượng (emoji) hoặc ký tự
+         */
+        function createParticle(symbol) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle', 'text-xl');
+            particle.innerHTML = symbol;
+
+            // Vị trí ngẫu nhiên ở cuối màn hình (bắt đầu từ dưới lên)
+            const startX = Math.random() * 100;
+            
+            // Các giá trị ngẫu nhiên cho animation
+            const duration = 8 + Math.random() * 8; // 8 đến 16 giây
+            const delay = Math.random() * 10; // 0 đến 10 giây
+            const size = 1 + Math.random(); // Kích thước từ 1x đến 2x
+            const floatX = (Math.random() - 0.5) * 50 + 'px'; // Lệch ngang ngẫu nhiên
+            const floatRotate = (Math.random() - 0.5) * 360 + 'deg'; // Xoay ngẫu nhiên
+
+            particle.style.left = `${startX}vw`;
+            particle.style.fontSize = `${size * 1.5}rem`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `-${delay}s`;
+            
+            // Thiết lập các biến CSS tùy chỉnh
+            particle.style.setProperty('--float-x', floatX);
+            particle.style.setProperty('--float-rotate', floatRotate);
+
+            container.appendChild(particle);
+        }
+
+        /**
+         * Hàm khởi tạo tất cả các hạt
+         */
+        function initializeParticles() {
+            for (let i = 0; i < NUM_PARTICLES; i++) {
+                // Chọn ngẫu nhiên biểu tượng
+                const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+                createParticle(symbol);
+            }
+        }
+
+        /**
+         * Hàm xử lý mở thiệp
+         */
+        function openCard() {
+            const cover = document.getElementById('cover-screen');
+            const card = document.getElementById('card-screen');
+
+            // Ẩn bì thư bằng cách làm mờ và thu nhỏ
+            cover.style.opacity = '0';
+            cover.style.transform = 'scale(0.8) translateY(50px)';
+            cover.style.pointerEvents = 'none';
+
+            // Sau khi animation ẩn bì thư gần xong, hiển thị thiệp đã mở
+            setTimeout(() => {
+                cover.classList.add('hidden'); // Ẩn hẳn sau khi transition
+
+                // Hiển thị thiệp đã mở với hiệu ứng chuyển động
+                card.classList.remove('hidden');
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1) translateY(0)';
+                    card.style.pointerEvents = 'auto';
+                }, 50); // Độ trễ ngắn để đảm bảo class 'hidden' đã được loại bỏ
+            }, 500); // 500ms để khớp với thời gian transition opacity
+        }
+
+        // --- Initialization ---
+        // Khởi tạo icons của Lucide (vì dùng qua data-lucide)
+        lucide.createIcons();
+
+        // Khởi tạo hiệu ứng hạt khi trang tải xong
+        window.onload = initializeParticles;
+
+    </script>
+</body>
+</html>
+
